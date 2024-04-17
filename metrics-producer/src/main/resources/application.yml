@@ -1,0 +1,9 @@
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

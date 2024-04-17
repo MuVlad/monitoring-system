@@ -1,0 +1,31 @@
+version: "3.8 "
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+
+  broker:
+    image: wurstmeister/kafka
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  postgres:
+    image: 'postgres:15.1-alpine'
+    container_name: 'metrics-system-db'
+    ports:
+      - 5432:5432
+    environment:
+      - 'POSTGRES_USER=mus'
+      - 'POSTGRES_PASSWORD=mus'
+      - 'POSTGRES_DB=test-db'
