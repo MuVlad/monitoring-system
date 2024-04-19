@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -28,7 +31,24 @@ public class MetricProducerService {
     public void sendMetric(String metricName) {
         final MetricsEndpoint.MetricDescriptor metricDescriptor = metricsEndpoint.metric(metricName, null);
         MetricDTO metric = metricMapper.map(metricDescriptor);
-        log.info("Sending metric: {} to Kafka.", metric);
-        kafkaTemplate.send("metrics-topic", metric);
+
+        final CompletableFuture<SendResult<String, MetricDTO>> send = kafkaTemplate.send("metrics-topic", metric);
+
+        send.whenComplete((result, exception) ->
+            {
+                if (exception == null) {
+
+                    StringBuilder metaData = new StringBuilder();
+                    metaData.append("Topic: %s, ".formatted(result.getRecordMetadata().topic()));
+                    metaData.append("Partition: %s, ".formatted(result.getRecordMetadata().partition()));
+                    metaData.append("Offset: %s, ".formatted(result.getRecordMetadata().offset()));
+
+                    log.info("Sending metric: {} to Kafka. MetaData: {}, ", metric, metaData);
+
+                } else {
+                    log.info("Error sending metric: {} to Kafka.", metric, exception);
+                }
+            }
+        );
     }
 }
