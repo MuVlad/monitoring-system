@@ -1,5 +1,6 @@
 package com.muslimov.vlad.metricsproducer.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muslimov.vlad.metricsproducer.dto.MetricDTO;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.Metric;
@@ -14,6 +15,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.JacksonUtils;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
 
@@ -35,8 +37,15 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, MetricDTO> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+    public ObjectMapper objectMapper() {
+        return JacksonUtils.enhancedObjectMapper();
+    }
+
+    @Bean
+    public ProducerFactory<String, MetricDTO> producerFactory(ObjectMapper objectMapper) {
+        final var kafkaProducerFactory = new DefaultKafkaProducerFactory<String, MetricDTO>(producerConfig());
+        kafkaProducerFactory.setValueSerializer(new JsonSerializer<>(objectMapper));
+        return kafkaProducerFactory;
     }
 
     @Bean

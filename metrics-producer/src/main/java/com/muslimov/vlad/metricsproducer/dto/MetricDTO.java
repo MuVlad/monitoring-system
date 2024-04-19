@@ -11,5 +11,5 @@ public class MetricDTO {
 
     private String name;
     private String description;
-    private Double value;
+    private String value;
 }
