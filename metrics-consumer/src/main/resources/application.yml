@@ -1,1 +1,16 @@
-spring.application.name=metrics-consumer
+server:
+  port: 8081
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: metrics-consumer-group
+  datasource:
+    url: jdbc:postgresql://localhost:5432/metrics-db
+    driver-class-name: org.postgresql.Driver
+    name: metrics-db
+    username: mus
+    password: mus
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

@@ -42,9 +42,9 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, MetricDTO> producerFactory(ObjectMapper objectMapper) {
+    public ProducerFactory<String, MetricDTO> producerFactory(ObjectMapper mapper) {
         final var kafkaProducerFactory = new DefaultKafkaProducerFactory<String, MetricDTO>(producerConfig());
-        kafkaProducerFactory.setValueSerializer(new JsonSerializer<>(objectMapper));
+        kafkaProducerFactory.setValueSerializer(new JsonSerializer<>(mapper));
         return kafkaProducerFactory;
     }
 

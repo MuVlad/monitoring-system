@@ -31,4 +31,4 @@ services:
     environment:
       - 'POSTGRES_USER=mus'
       - 'POSTGRES_PASSWORD=mus'
-      - 'POSTGRES_DB=test-db'
+      - 'POSTGRES_DB=metrics-db'
