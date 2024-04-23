@@ -6,7 +6,7 @@ import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MetricMapper implements Mapper<MetricsEndpoint.MetricDescriptor, MetricDTO> {
+public class MetricMapperImpl implements Mapper<MetricsEndpoint.MetricDescriptor, MetricDTO> {
     @Override
     public MetricDTO map(MetricsEndpoint.MetricDescriptor metricDescriptor) {
         return new MetricDTO(

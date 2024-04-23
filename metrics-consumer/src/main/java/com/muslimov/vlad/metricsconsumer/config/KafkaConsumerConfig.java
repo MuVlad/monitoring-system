@@ -20,7 +20,7 @@ import static org.springframework.kafka.support.serializer.JsonDeserializer.TYPE
 @Configuration
 public class KafkaConsumerConfig {
 
-    @Value("${spring.kafka.producer.bootstrap-servers}")
+    @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;
 
     public Map<String, Object> consumerConfig() {

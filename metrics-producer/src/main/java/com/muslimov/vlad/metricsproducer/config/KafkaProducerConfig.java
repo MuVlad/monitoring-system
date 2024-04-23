@@ -3,13 +3,11 @@ package com.muslimov.vlad.metricsproducer.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muslimov.vlad.metricsproducer.dto.MetricDTO;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.CommonErrorHandler;
@@ -54,10 +52,9 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public CommonErrorHandler errorHandler(KafkaOperations<String, Metric> kafkaOperations) {
+    public CommonErrorHandler errorHandler(KafkaTemplate<String, MetricDTO> kafkaTemplate) {
         return new DefaultErrorHandler(
-            new DeadLetterPublishingRecoverer(kafkaOperations),
-            new FixedBackOff(1000L, 2L)
-        );
+            new DeadLetterPublishingRecoverer(kafkaTemplate),
+            new FixedBackOff(1000L, 2));
     }
 }

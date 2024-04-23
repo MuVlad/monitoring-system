@@ -7,6 +7,8 @@ import java.util.List;
 public interface MetricConsumerService {
 
     List<MetricDTO> getAll();
+
     MetricDTO getById(Long id);
+
     void save(MetricDTO metricDTO);
 }

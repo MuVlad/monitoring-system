@@ -1,7 +1,7 @@
 package com.muslimov.vlad.metricsproducer.service;
 
 import com.muslimov.vlad.metricsproducer.dto.MetricDTO;
-import com.muslimov.vlad.metricsproducer.mapper.impl.MetricMapper;
+import com.muslimov.vlad.metricsproducer.mapper.impl.MetricMapperImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Service class responsible for collecting metrics and sending them to Kafka.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -18,7 +21,7 @@ public class MetricProducerService {
 
     private final KafkaTemplate<String, MetricDTO> kafkaTemplate;
     private final MetricsEndpoint metricsEndpoint;
-    private final MetricMapper metricMapper;
+    private final MetricMapperImpl metricMapperImpl;
 
     public void sendMetrics() {
         sendMetric("system.cpu.usage");
@@ -28,9 +31,16 @@ public class MetricProducerService {
         sendMetric("application.started.time");
     }
 
+    /**
+     * Sends a specific metric to Kafka.
+     * If successful, log metadata of the sent metric
+     * If an error occurred, log the error message
+     *
+     * @param metricName Name of the metric to be sent.
+     */
     public void sendMetric(String metricName) {
         final MetricsEndpoint.MetricDescriptor metricDescriptor = metricsEndpoint.metric(metricName, null);
-        MetricDTO metric = metricMapper.map(metricDescriptor);
+        MetricDTO metric = metricMapperImpl.map(metricDescriptor);
 
         final CompletableFuture<SendResult<String, MetricDTO>> send = kafkaTemplate.send("metrics-topic", metric);
 

@@ -4,15 +4,14 @@ import com.muslimov.vlad.metricsconsumer.dto.MetricDTO;
 import com.muslimov.vlad.metricsconsumer.model.MetricEntity;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 
 @Mapper(
     componentModel = "spring",
-    injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-    unmappedTargetPolicy = ReportingPolicy.IGNORE
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface MetricMapper {
 
     MetricEntity toEntity(MetricDTO metricDTO);
+
     MetricDTO toDto(MetricEntity metricEntity);
 }
